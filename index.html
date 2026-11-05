@@ -175,6 +175,9 @@ section{padding-block:64px}
 .v3-rooms button{border:0;background:rgba(19,41,58,.86);color:#EEF2F4;padding:7px 11px;border-radius:2px;font-weight:600;font-size:.82rem;cursor:pointer}
 .v3-rooms button[aria-pressed="true"]{background:#C2601A;color:#fff}
 .v3-fs{position:absolute;top:44px;right:10px;border:0;background:rgba(248,249,249,.9);color:#13293A;padding:7px 10px;border-radius:2px;font-weight:700;font-size:.8rem;cursor:pointer}
+.v3-spin{position:absolute;bottom:10px;left:10px;display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(19,41,58,.88);color:#EEF2F4;padding:8px 12px;border-radius:3px;font-weight:700;font-size:.82rem;cursor:pointer;z-index:2}
+.v3-spin svg{width:14px;height:14px}
+.v3-rooms~.v3-spin{bottom:auto;top:44px;left:10px}
 .v3-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#13293A}
 
 /* building band */
@@ -391,7 +394,7 @@ footer .wrap{display:flex;flex-direction:column;gap:8px}
         <span><i style="background:#8a9a7b"></i>Garden</span>
       </div>
     </div>
-    <div class="v3 bview" id="bview"><span class="v3-hint">Drag to turn · scroll or pinch to zoom · tap a flat to open it</span></div>
+    <div class="v3 bview" id="bview"><span class="v3-hint">Drag to turn · scroll or pinch to zoom · tap a flat to open it · rotation stops when you touch it</span></div>
     <div class="b-grid">
       <div>
         <h3 style="margin-bottom:12px">Access and safety</h3>
@@ -801,6 +804,15 @@ function renderChips(){const c=document.getElementById('chips');
   c.innerHTML=favs.size?[...favs].sort((a,b)=>a-b).map(n=>`<span class="chip">Flat ${n}</span>`).join(''):'<span class="none">Tap the heart on any flat to add it here.</span>'}
 
 /* ---------- 3D helpers ---------- */
+let spinPref=true;try{spinPref=localStorage.getItem('ch-spin')!=='off'}catch(e){}
+const ICON_PAUSE='<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" fill="currentColor"/></svg>';
+const ICON_PLAY='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>';
+function spinButton(host,getV){
+  const b=document.createElement('button');b.type='button';b.className='v3-spin';
+  const sync=on=>{b.innerHTML=(on?ICON_PAUSE+'Pause rotation':ICON_PLAY+'Play rotation');b.setAttribute('aria-pressed',on?'false':'true')};
+  b.onclick=()=>{const v=getV();if(!v)return;const on=!v.spin;v.setSpin(on);spinPref=on;try{localStorage.setItem('ch-spin',on?'on':'off')}catch(e){}sync(on)};
+  host.appendChild(b);sync(spinPref);return sync;
+}
 let viewer=null;
 function stopViewer(){if(viewer){viewer.dispose();viewer=null}}
 function noGL(host,msg){host.innerHTML=`<div class="v3-msg"><div><b>3D view unavailable</b><p>${msg}</p></div></div>`}
@@ -841,18 +853,19 @@ function setTab(t){
     else m.appendChild(planSVG(mkSVG(),{pos:u.pos,labels:true}));
   }else if(t==='model'){
     const h=document.createElement('div');h.className='v3';m.appendChild(h);
-    viewer=mount(h,{mode:'floor',level:u.floor,pos:u.pos,bg:'#dfe6ea'});
+    let sy=null;viewer=mount(h,{mode:'floor',level:u.floor,pos:u.pos,bg:'#dfe6ea',spin:spinPref,onSpin:on=>sy&&sy(on)});
+    if(viewer)sy=spinButton(h,()=>viewer);
     if(viewer){h.insertAdjacentHTML('beforeend',`<span class="v3-badge">${FLOORNAME[u.floor]} floor · Flat ${u.n} highlighted</span><span class="v3-hint">Drag to turn · pinch or scroll to zoom</span>`)}
   }else if(t==='tour'){
     const h=document.createElement('div');h.className='v3';m.appendChild(h);
-    viewer=mount(h,{mode:'tour',level:u.floor,pos:u.pos});
+    let sy=null;viewer=mount(h,{mode:'tour',level:u.floor,pos:u.pos,spin:spinPref,onSpin:on=>sy&&sy(on)});
     if(viewer){
       h.insertAdjacentHTML('beforeend',`<span class="v3-badge">Walk-through · Flat ${u.n}</span><span class="v3-hint">Drag to look · tap the floor to walk · WASD keys</span>`);
       const bar=document.createElement('div');bar.className='v3-rooms';
       const order=viewer.rooms.map((r,i)=>[r,i]).sort((a,b)=>ROOMORDER.indexOf(a[0].name)-ROOMORDER.indexOf(b[0].name));
       order.forEach(([r,i],j)=>{const b=document.createElement('button');b.type='button';b.textContent=r.name;b.setAttribute('aria-pressed',r.name==='Hall'?'true':'false');
         b.onclick=()=>{viewer.goRoom(i);bar.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'))};bar.appendChild(b)});
-      h.appendChild(bar);
+      h.appendChild(bar);sy=spinButton(h,()=>viewer);
       if(a.tour){h.insertAdjacentHTML('beforeend',`<a class="v3-fs" href="${a.tour}" target="_blank" rel="noopener">Open 360° tour</a>`)}
       else{const fs=document.createElement('button');fs.className='v3-fs';fs.type='button';fs.textContent='Full screen';
         fs.onclick=()=>{const p=h.requestFullscreen?h.requestFullscreen():null;if(p&&p.catch)p.catch(()=>{})};h.appendChild(fs)}
@@ -882,10 +895,11 @@ const bview=document.getElementById('bview'),bfl=document.getElementById('bfloor
   const b=document.createElement('button');b.type='button';b.textContent=t;b.dataset.v=v;b.setAttribute('aria-pressed',v==='all'?'true':'false');
   b.onclick=()=>{bFloor=v==='all'||v==='garden'?v:+v;bfl.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));applyBFloor()};bfl.appendChild(b)});
 function applyBFloor(){if(!bv)return;if(bFloor==='garden')bv.showRear();else bv.setFloor(bFloor)}
-let bVisible=false;
+let bVisible=false,bSync=null;
 function startBuilding(){if(bv||!bview.isConnected)return;
   bview.querySelectorAll('.v3-msg').forEach(e=>e.remove());
-  bv=mount(bview,{mode:'building',onFlat:n=>{openUnit(n)},onLost:restartBuilding});applyBFloor()}
+  bv=mount(bview,{mode:'building',spin:spinPref,onFlat:n=>{openUnit(n)},onLost:restartBuilding,onSpin:on=>bSync&&bSync(on)});
+  if(bv&&!bSync)bSync=spinButton(bview,()=>bv);else if(bSync)bSync(spinPref);applyBFloor()}
 function restartBuilding(){if(bv){bv.dispose();bv=null}setTimeout(()=>{if(!dlg.open)startBuilding()},300)}
 function resumeBuilding(){if(!bv){if(bVisible)startBuilding();return}if(bv.lost){restartBuilding();return}bv.paused=!bVisible}
 const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>{es.forEach(e=>{bVisible=e.isIntersecting;if(e.isIntersecting){if(!bv)startBuilding();else{bv.paused=false;if(bv.lost)restartBuilding()}}else if(bv)bv.paused=true})},{rootMargin:'200px'}):null;

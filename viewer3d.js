@@ -456,7 +456,7 @@
 
   /* ---------------- viewer ---------------- */
   function Viewer(host, opts) {
-    this.host = host; this.opts = opts = opts || {}; this.mode = opts.mode || 'building';
+    this.host = host; this.opts = opts = opts || {}; this.mode = opts.mode || 'building'; this.spin = opts.spin !== false;
     const W0 = host.clientWidth || 800, H0 = host.clientHeight || 500;
     const r = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     r.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); r.setSize(W0, H0); r.outputEncoding = THREE.sRGBEncoding;
@@ -504,6 +504,7 @@
     this.setAnchors();
     this.idle = 0;
   };
+  Viewer.prototype.setSpin = function (on) { this.spin = !!on; this.idle = on ? 9999 : 0; };
   Viewer.prototype.showRear = function () {
     this.setFloor(0); this.thetaGoal = .35; this.phiGoal = .9; this.radGoal = 40; this.targetGoal = new THREE.Vector3(18 - CX, 0, 30 - CZ);
   };
@@ -654,7 +655,8 @@
   Viewer.prototype.bindControls = function () {
     const el = this.renderer.domElement, pts = new Map(); let pinch = 0, moved = 0;
     this.idle = 0; this.keys = {};
-    el.addEventListener('pointerdown', e => { el.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; this.idle = 0; });
+    const stop = () => { if (this.spin && this.opts.onSpin) { this.spin = false; this.opts.onSpin(false); } else this.spin = false; };
+    el.addEventListener('pointerdown', e => { stop(); el.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; this.idle = 0; });
     el.addEventListener('pointermove', e => {
       if (this.mode !== 'tour' && !pts.size) this.hover(e);
       if (!pts.has(e.pointerId)) return;
@@ -670,7 +672,7 @@
     };
     el.addEventListener('pointerup', up); el.addEventListener('pointercancel', e => { pts.delete(e.pointerId); pinch = 0; });
     el.addEventListener('contextmenu', e => e.preventDefault());
-    el.addEventListener('wheel', e => { e.preventDefault(); this.zoom(e.deltaY > 0 ? 1.08 : .93); this.idle = 0; }, { passive: false });
+    el.addEventListener('wheel', e => { stop(); e.preventDefault(); this.zoom(e.deltaY > 0 ? 1.08 : .93); this.idle = 0; }, { passive: false });
     el.tabIndex = 0;
     el.addEventListener('keydown', e => { this.keys[e.key.toLowerCase()] = true; if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) e.preventDefault(); });
     el.addEventListener('keyup', e => { this.keys[e.key.toLowerCase()] = false; });
@@ -738,14 +740,14 @@
         } else if (this.path && this.path.length) this.goal = this.path.shift();
       }
       if (this.yawGoal != null) { let dy = this.yawGoal - this.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); this.yaw += dy * .08; if (Math.abs(dy) < .002) this.yawGoal = null; }
-      else if (this.idle > 300) this.yaw += .0012;
+      else if (this.idle > 300 && this.spin) this.yaw += .0012;
       cam.position.copy(this.pos3); cam.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
     } else {
       if (this.targetGoal) { this.target.lerp(this.targetGoal, .08); if (this.target.distanceTo(this.targetGoal) < .01) this.targetGoal = null; }
       if (this.radGoal) { this.rad += (this.radGoal - this.rad) * .08; if (Math.abs(this.radGoal - this.rad) < .05) this.radGoal = null; }
       if (this.thetaGoal != null) { let d = this.thetaGoal - this.theta; d = Math.atan2(Math.sin(d), Math.cos(d)); this.theta += d * .06; if (Math.abs(d) < .002) this.thetaGoal = null; }
       if (this.phiGoal) { this.phi += (this.phiGoal - this.phi) * .08; if (Math.abs(this.phiGoal - this.phi) < .002) this.phiGoal = null; }
-      if (this.idle > 220 && !this.opts.still) this.theta += .0016;
+      if (this.idle > 220 && !this.opts.still && this.spin) this.theta += .0016;
       cam.position.set(this.target.x + this.rad * Math.sin(this.phi) * Math.sin(this.theta), this.target.y + this.rad * Math.cos(this.phi), this.target.z + this.rad * Math.sin(this.phi) * Math.cos(this.theta));
       cam.lookAt(this.target);
     }
