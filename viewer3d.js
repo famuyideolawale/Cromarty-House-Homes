@@ -795,7 +795,8 @@
       if (this.thetaGoal != null) { let d = this.thetaGoal - this.theta; d = Math.atan2(Math.sin(d), Math.cos(d)); this.theta += d * .06; if (Math.abs(d) < .002) this.thetaGoal = null; }
       if (this.phiGoal) { this.phi += (this.phiGoal - this.phi) * .08; if (Math.abs(this.phiGoal - this.phi) < .002) this.phiGoal = null; }
       if (this.idle > 220 && !this.opts.still && this.spin) this.theta += .0016;
-      cam.position.set(this.target.x + this.rad * Math.sin(this.phi) * Math.sin(this.theta), this.target.y + this.rad * Math.cos(this.phi), this.target.z + this.rad * Math.sin(this.phi) * Math.cos(this.theta));
+      const fit = Math.max(1, Math.min(1.9, 1.3 / (cam.aspect || 1))), R = this.rad * fit;   // pull back on tall, narrow screens so the whole building fits
+      cam.position.set(this.target.x + R * Math.sin(this.phi) * Math.sin(this.theta), this.target.y + R * Math.cos(this.phi), this.target.z + R * Math.sin(this.phi) * Math.cos(this.theta));
       cam.lookAt(this.target);
     }
     this.renderer.render(this.scene, cam);

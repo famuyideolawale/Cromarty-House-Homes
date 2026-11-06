@@ -34,13 +34,13 @@
   --deep:#0A1822; --ondeep:#EEF2F4; --ondeep-muted:#8EA3B2;
   --beacon:#E5843C; --beacon-ink:#1A0E05;
   --avail:#4DB284; --resv:#6B7883; --stone:#3A4650; --stone-2:#2C3740; --glass:#7FA6C2; --water:#17344A;
-  --wall:#D9E0E5; --part:#8D9AA4; --floor:#24313B; --floor-sel:#5A3A22; --corr:#1B262F; --core:#2E2636; color-scheme:dark}}
+  --wall:#D9E0E5; --part:#8D9AA4; --floor:#24313B; --floor-sel:#3D5568; --corr:#1B262F; --core:#2E2636; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0D141A; --paper:#141E26; --ink:#E5EAED; --muted:#93A1AB; --line:#26343F;
   --deep:#0A1822; --ondeep:#EEF2F4; --ondeep-muted:#8EA3B2;
   --beacon:#E5843C; --beacon-ink:#1A0E05;
   --avail:#4DB284; --resv:#6B7883; --stone:#3A4650; --stone-2:#2C3740; --glass:#7FA6C2; --water:#17344A;
-  --wall:#D9E0E5; --part:#8D9AA4; --floor:#24313B; --floor-sel:#5A3A22; --corr:#1B262F; --core:#2E2636; color-scheme:dark}
+  --wall:#D9E0E5; --part:#8D9AA4; --floor:#24313B; --floor-sel:#3D5568; --corr:#1B262F; --core:#2E2636; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-padding-top:70px}
@@ -69,7 +69,20 @@ nav.links{display:flex;gap:22px;margin-left:auto;font-size:.92rem}
 nav.links a{color:var(--ondeep);text-decoration:none;opacity:.85}
 nav.links a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
 .top .btn{padding:9px 14px;font-size:.9rem}
-@media (max-width:820px){nav.links{display:none}.top .btn{margin-left:auto}}
+.menu-btn{display:none;border:1px solid color-mix(in srgb,var(--ondeep) 30%,transparent);background:transparent;color:var(--ondeep);border-radius:3px;width:40px;height:38px;padding:0;cursor:pointer;align-items:center;justify-content:center;flex:0 0 auto}
+.menu-btn svg{width:20px;height:20px}
+@media (max-width:820px){
+  .menu-btn{display:inline-flex}
+  nav.links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:0;margin:0;background:var(--deep);border-top:1px solid color-mix(in srgb,var(--ondeep) 15%,transparent);box-shadow:0 12px 24px rgba(0,0,0,.35);padding:6px max(16px,env(safe-area-inset-left,0px)) 14px}
+  nav.links.open{display:flex}
+  nav.links a{padding:13px 0;font-size:1.05rem;opacity:1;border-bottom:1px solid color-mix(in srgb,var(--ondeep) 10%,transparent)}
+  nav.links a:last-child{border-bottom:0}
+  .top .btn{margin-left:0}
+  .top .cur{margin-left:auto}
+}
+nav.links .nav-cta{display:none}
+@media (max-width:820px){nav.links a.nav-cta{display:block;color:#E5843C;font-weight:700}}
+@media (max-width:400px){.top .btn{display:none}}
 
 /* hero */
 .hero{background:var(--deep);color:var(--ondeep);padding-block:36px 40px}
@@ -146,6 +159,21 @@ section{padding-block:64px}
 .specs{display:flex;gap:14px;font-size:.88rem;color:var(--muted);flex-wrap:wrap}
 .specs b{color:var(--ink);font-weight:600}
 .card .row3{display:flex;justify-content:space-between;align-items:center}
+@media (max-width:600px){
+  .grid{grid-template-columns:1fr;gap:10px}
+  .card{flex-direction:row}
+  .card .plan{width:38%;flex:0 0 38%;aspect-ratio:auto;border-bottom:0;border-right:1px solid var(--line);padding:6px}
+  .card .body{padding:11px 12px;gap:6px;min-width:0;flex:1}
+  .card .name{font-size:1.35rem}
+  .card .floorlbl{display:block;margin-top:2px}
+  .card .specs{gap:4px 10px;font-size:.8rem}
+  .card .price{font-size:1.25rem}
+  .card .pill{font-size:.62rem;padding:3px 6px}
+  .card .row3{flex-wrap:wrap;gap:6px}
+  .bfloors{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+  .bfloors button{flex:0 0 auto}
+  .bview{height:min(78vh,560px)}
+}
 .price{font-family:var(--f-display);font-size:1.5rem;font-weight:700}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:2px}
 .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
@@ -432,9 +460,10 @@ body.v3-locked .wa{display:none}
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#homes"><b>Cromarty House</b><span>By Fame Living · Regent Quay, Aberdeen</span></a>
-    <nav class="links" aria-label="Sections">
-      <a href="#homes">Homes</a><a href="#building">Building</a><a href="#invest">Invest</a><a href="#market">Market</a><a href="#developer">Developer</a><a href="#location">Location</a>
+    <nav class="links" id="nav" aria-label="Sections">
+      <a href="#homes">Homes</a><a href="#building">Building</a><a href="#invest">Invest</a><a href="#market">Market</a><a href="#developer">Developer</a><a href="#location">Location</a><a href="#enquire" class="nav-cta">Register interest</a>
     </nav>
+    <button class="menu-btn" type="button" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
     <select class="cur" id="cur" aria-label="Show prices in"><option value="GBP">£ GBP</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="CAD">$ CAD</option><option value="NGN">₦ NGN</option></select>
     <a class="btn" href="#enquire">Register interest</a>
   </div>
@@ -1264,6 +1293,15 @@ document.getElementById('enqForm').addEventListener('submit',async e=>{e.prevent
     out.innerHTML=`Thanks, ${first}. <a href="mailto:${esc(CONFIG.email)}?subject=${encodeURIComponent('Cromarty House enquiry')}&body=${encodeURIComponent(body)}" style="color:inherit;font-weight:700">Send your enquiry by email</a> to finish.`}
   else out.textContent=`Thanks, ${data.name.split(' ')[0]}. Your interest${shortlist?' in '+shortlist:''} is recorded on this preview. Once the sales form is connected, it goes straight to Fame Living's sales team.`;
 });
+
+/* ---------- mobile menu ---------- */
+(function(){const btn=document.getElementById('menu-btn'),nav=document.getElementById('nav');
+  const set=o=>{nav.classList.toggle('open',o);btn.setAttribute('aria-expanded',String(o));btn.innerHTML=o?'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" stroke="currentColor" stroke-width="2" fill="none"/></svg>':'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>'};
+  btn.addEventListener('click',e=>{e.stopPropagation();set(!nav.classList.contains('open'))});
+  nav.addEventListener('click',e=>{if(e.target.closest('a'))set(false)});
+  document.addEventListener('click',e=>{if(nav.classList.contains('open')&&!e.target.closest('header.top'))set(false)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav.classList.contains('open')){set(false);btn.focus()}});
+})();
 
 /* ---------- currency selector ---------- */
 const curSel=document.getElementById('cur');curSel.value=cur;
