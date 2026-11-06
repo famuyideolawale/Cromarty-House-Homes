@@ -273,8 +273,10 @@ const PROJECTS=[
    summary:'A five-storey building facing Aberdeen Harbour, converting its four upper floors into 28 one and two bedroom flats, with a new garden, EV charging and cycle store.',
    image:'assets/cromarty-house.jpg',facts:[['Homes','28'],['From','£90,000'],['Est. yield','7.9–9.5%']],
    tags:['Off-plan','1 and 2 bed','3D walk-through','Harbour views']},
-  {soon:true,name:'Next project',where:'Aberdeen',status:'Coming soon',
-   summary:'A new Fame Living project is being prepared for the showcase, with plans, 3D views and prices to follow. Register now to hear first.'}
+  {slug:'hilltown',name:'Hilltown',where:'112–114 Hilltown, Dundee DD3 7BG',status:'Selling now',
+   summary:'The former Hillside Works offices, converted into five two-bedroom flats, each with its own balcony or terrace, behind a restored red-brick street front.',
+   image:'assets/hilltown.jpg',alt:"Architect's visual of the Hilltown building from the street",facts:[['Homes','5'],['From','£125,000'],['Est. yield','7.1–8.6%']],
+   tags:['Off-plan','2 bed','3D walk-through','Balconies']}
 ];
 const ARROW='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
 const CUBE='<svg viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M200 40 340 120v160l-140 80-140-80V120z" stroke="var(--sand)" stroke-width="3" stroke-dasharray="10 10"/><path d="M60 120 200 200 340 120M200 200v160" stroke="var(--gold)" stroke-width="3"/></g></svg>';
@@ -285,7 +287,7 @@ document.getElementById('list').innerHTML=PROJECTS.map(p=>p.soon?`
       <a class="btn" href="#contact">Hear about it first ${ARROW}</a></div>
   </div>`:`
   <a class="proj rv" href="${p.slug}/">
-    <div class="media"><img src="${p.image}" alt="3D view of ${p.name} from the street" loading="lazy"><span class="badge"><i></i>${p.status}</span></div>
+    <div class="media"><img src="${p.image}" alt="${p.alt||'3D view of '+p.name+' from the street'}" loading="lazy"><span class="badge"><i></i>${p.status}</span></div>
     <div class="info">
       <p class="where">${p.where}</p><h3>${p.name}</h3><p class="sum">${p.summary}</p>
       <div class="tags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
