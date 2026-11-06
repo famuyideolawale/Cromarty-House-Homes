@@ -517,7 +517,7 @@
       add(27.5, G, 29.5, 'Accessible parking ×3', 'core'); add(15.4, 2.6, 21.9, 'Cycle shelter', 'room'); add(19.1, 1.8, 21.8, 'Bins', 'room');
     }
     if (f === 'all' || f === 0) {
-      M.ground.entrances.forEach(e => add((e.door[0] + e.door[2]) / 2 + (e.id === 'flats' ? .6 : -.6), (f === 'all' ? 3.6 : 2.6) + (e.id === 'flats' ? .9 : 0), e.door[1] - .5, e.name, e.id));
+      M.ground.entrances.forEach(e => add((e.door[0] + e.door[2]) / 2, 3.45, e.door[1] - 1.6, e.name, e.id));
     }
     if (f !== 'all') {
       const y = f * H + 2.4;
@@ -530,11 +530,11 @@
       }
       if (f === 0) {
         M.ground.rooms.forEach(r => add(r.x, 1.4, r.z, r.name, r.name.startsWith('Exit') ? 'exit' : 'room'));
-        add(22.2, 2.6, 22.4, 'Final fire exit', 'exit');
+        add(21.2, 2.3, 22.4, 'Final fire exit', 'exit');
       }
       if (f === -1) M.basement.rooms.forEach(r => add(r.x, -H + 1.4, r.z, r.name, 'room'));
     }
-    this.anchors = A; this.labels.innerHTML = '';
+    this.anchors = A; this.labels.innerHTML = ''; this.occluders = null;
     A.forEach(a => { const d = document.createElement('span'); d.className = 'v3-tag v3-' + a.k; d.textContent = a.t; this.labels.appendChild(d); a.el = d; });
   };
   Viewer.prototype.initFloor = function () {
@@ -752,15 +752,49 @@
       cam.lookAt(this.target);
     }
     this.renderer.render(this.scene, cam);
-    // labels
-    if (this.anchors.length) {
-      const w = this.host.clientWidth, h = this.host.clientHeight, v = new THREE.Vector3();
-      for (const a of this.anchors) {
-        v.copy(a.p).project(cam);
-        const vis = v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05;
-        a.el.style.display = vis ? '' : 'none';
-        if (vis) a.el.style.transform = `translate(${(v.x * .5 + .5) * w}px,${(-v.y * .5 + .5) * h}px) translate(-50%,-50%)`;
+    // labels: pinned to their 3D point, hidden when something solid is in front, and never stacked on each other
+    if (this.anchors.length) this.updateLabels();
+  };
+  Viewer.prototype.collectOccluders = function () {
+    const list = [];
+    this.scene.traverseVisible(o => {
+      if (!o.isMesh || !o.geometry) return;
+      const m = Array.isArray(o.material) ? o.material[0] : o.material;
+      if (!m || m.transparent || m.visible === false || (m.side === THREE.BackSide)) return;
+      list.push(o);
+    });
+    this.occluders = list; this.occK = 0;
+    for (const a of this.anchors) a.hidden = false;
+  };
+  Viewer.prototype.updateLabels = function () {
+    const cam = this.cam, w = this.host.clientWidth, h = this.host.clientHeight, v = new THREE.Vector3();
+    if (!this.occluders) this.collectOccluders();
+    // occlusion: test a few labels per frame against the solid geometry between the camera and the label
+    const rc = this.rc || (this.rc = new THREE.Raycaster()), n = this.anchors.length, per = Math.min(n, 4);
+    for (let i = 0; i < per; i++) {
+      const a = this.anchors[this.occK++ % n];
+      const dir = a.p.clone().sub(cam.position), dist = dir.length(); dir.normalize();
+      rc.set(cam.position, dir); rc.near = .05; rc.far = Math.max(.1, dist - .45);
+      a.hidden = rc.intersectObjects(this.occluders, false).length > 0;
+    }
+    // project, then place in priority order, nudging or dropping labels that would overlap
+    const placed = [];
+    const over = (r) => placed.some(q => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1]);
+    for (const a of this.anchors) {
+      v.copy(a.p).project(cam);
+      let show = !a.hidden && v.z < 1 && Math.abs(v.x) < 1.02 && Math.abs(v.y) < 1.02;
+      let x = (v.x * .5 + .5) * w, y = (-v.y * .5 + .5) * h;
+      if (show) {
+        if (!a.w) { a.w = a.el.offsetWidth || 80; a.h = a.el.offsetHeight || 22; }
+        let ok = false;
+        for (const dy of [0, -(a.h + 3), a.h + 3]) {
+          const r = [x - a.w / 2 - 2, y + dy - a.h / 2 - 1, x + a.w / 2 + 2, y + dy + a.h / 2 + 1];
+          if (!over(r)) { placed.push(r); y += dy; ok = true; break; }
+        }
+        show = ok;
       }
+      if (show) { a.el.style.visibility = 'visible'; a.el.style.opacity = 1; a.el.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`; }
+      else { a.el.style.opacity = 0; a.el.style.visibility = 'hidden'; }
     }
   };
   Viewer.prototype.dispose = function () {
