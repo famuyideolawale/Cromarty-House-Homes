@@ -472,6 +472,8 @@ body.v3-locked .wa{display:none}
 .drawing-lg{background:#fff;border:1px solid var(--line);border-radius:4px;overflow:auto;max-height:78vh;cursor:zoom-in}
 .drawing-lg img{display:block;width:100%;height:auto}
 @media (min-width:1000px){#grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.nb-btn{border:1px solid var(--line);background:var(--bg);padding:7px 11px;border-radius:3px;cursor:pointer;font-weight:600;font-size:.86rem}
+.nb-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .drawing-lg.zoom{cursor:zoom-out}.drawing-lg.zoom img{width:auto;max-width:none}
 </style>
 
@@ -576,6 +578,7 @@ body.v3-locked .wa{display:none}
     </div>
     <div class="bctl">
       <div class="bfloors" id="bfloors" role="group" aria-label="Show floor"></div>
+      <button type="button" class="nb-btn" id="nb-btn" aria-pressed="false">Show the street</button>
       <div class="blegend" aria-hidden="true">
         <span><i style="background:#9a5440"></i>Red-brick ground floor</span>
         <span><i style="background:#b8643f"></i>Terracotta stair tower</span>
@@ -1207,6 +1210,9 @@ document.getElementById('d-reserve').addEventListener('click',()=>{
 
 /* ---------- building viewer (starts when scrolled into view, pauses while a flat is open) ---------- */
 const bview=document.getElementById('bview'),bfl=document.getElementById('bfloors');let bv=null,bFloor='all';
+/* next-door buildings: hidden by default so the building stands alone; one tap shows the street */
+let nbOn=false;const nbBtn=document.getElementById('nb-btn');
+nbBtn.onclick=()=>{nbOn=!nbOn;nbBtn.setAttribute('aria-pressed',String(nbOn));nbBtn.textContent=nbOn?'Hide the street':'Show the street';if(bv)bv.setNeighbours(nbOn);track('neighbours',{on:nbOn})};
 [['all','Whole building'],['rear','The back'],[0,'Ground'],[1,'1st'],[2,'2nd']].forEach(([v,t])=>{
   const b=document.createElement('button');b.type='button';b.textContent=t;b.dataset.v=v;b.setAttribute('aria-pressed',v==='all'?'true':'false');
   b.onclick=()=>{bFloor=v==='all'||v==='rear'?v:+v;bfl.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));applyBFloor()};bfl.appendChild(b)});
@@ -1214,7 +1220,7 @@ function applyBFloor(){if(!bv)return;if(bFloor==='rear')bv.showRear();else bv.se
 let bVisible=false,bSync=null,bStarting=false;
 function startBuilding(){if(bv||bStarting||!bview.isConnected)return;bStarting=true;
   bview.querySelectorAll('.v3-msg').forEach(e=>e.remove());
-  mountLater(bview,{mode:'building',spin:spinPref,onFlat:n=>{openUnit(n)},onLost:restartBuilding,onSpin:on=>bSync&&bSync(on)},v=>{
+  mountLater(bview,{mode:'building',neighbours:nbOn,spin:spinPref,onFlat:n=>{openUnit(n)},onLost:restartBuilding,onSpin:on=>bSync&&bSync(on)},v=>{
     bStarting=false;if(!v)return;bv=v;
     if(!bSync)bSync=spinButton(bview,()=>bv);else bSync(spinPref);maxButton(bview);lightPanel(bview,()=>bv,false);applyBFloor();
     bv.paused=!bVisible||dlg.open;

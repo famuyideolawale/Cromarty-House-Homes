@@ -257,7 +257,7 @@
   /* street, rear yard and the neighbouring tenements */
   function buildSite(mats) {
     const g = new THREE.Group(), pv = new Prisms(), rd = new Prisms(), yd = new Prisms(), nb = new Prisms(), nb2 = new Prisms(), kerb = new Prisms(), lawn = new Prisms(), shop = new Prisms(), deck = new Prisms(), wall = new Prisms();
-    const X0 = -18, X1 = 40;
+    const X0 = -9, X1 = 31;
     pv.face([[X0, pavY(X0), 15.9], [X1, pavY(X1), 15.9], [X1, pavY(X1), 18.7], [X0, pavY(X0), 18.7]]);
     kerb.face([[X0, pavY(X0) - .12, 18.7], [X1, pavY(X1) - .12, 18.7], [X1, pavY(X1), 18.7], [X0, pavY(X0), 18.7]], false);
     rd.face([[X0, pavY(X0) - .12, 18.7], [X1, pavY(X1) - .12, 18.7], [X1, pavY(X1) - .12, 27], [X0, pavY(X0) - .12, 27]]);

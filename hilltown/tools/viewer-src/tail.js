@@ -37,14 +37,14 @@
     sc.add(this.site = buildSite(mats));
     for (let L = 0; L <= 2; L++) { const g = buildLevel(L, mats, {}); this.levels[L] = g; sc.add(g); }
     sc.add(this.roof = buildRoof(mats));
-    this.target = new THREE.Vector3(0, 5.5, 2); this.theta = .5; this.phi = 1.2; this.rad = 36; this.minR = 10; this.maxR = 90;
+    this.showNb = !!this.opts.neighbours; this.target = new THREE.Vector3(0, 5.5, 1.5); this.theta = .5; this.phi = 1.2; this.rad = 31; this.minR = 10; this.maxR = 90;
     this.setFloor('all');
   };
   Viewer.prototype.setFloor = function (f) {
     this.floor = f;
     for (const L in this.levels) this.levels[L].visible = f === 'all' || +L <= f;
     this.roof.visible = f === 'all';
-    (this.site.userData.nb || []).forEach(m => m.visible = f === 'all');
+    (this.site.userData.nb || []).forEach(m => m.visible = f === 'all' && !!this.showNb);
     const sc = this.scene;
     [this.tower, this.balc].forEach(o => o && (sc.remove(o), o.traverse(q => q.geometry && q.geometry.dispose())));
     const maxY = f === 'all' ? 99 : LV[f].top;
@@ -52,7 +52,7 @@
     [this.tower, this.balc].forEach(g => g.traverse(o => { if (o.isMesh) { o.castShadow = !(o.material && o.material.transparent); o.receiveShadow = true; } }));
     const y = f === 'all' ? 6 : LV[f].y + 1;
     this.targetGoal = new THREE.Vector3(0, y, f === 'all' ? 2 : 0);
-    this.radGoal = f === 'all' ? 36 : 30; this.phiGoal = f === 'all' ? 1.18 : .72;
+    this.radGoal = f === 'all' ? 31 : 28; this.phiGoal = f === 'all' ? 1.18 : .72;
     this.setAnchors(); this.occluders = null;
     this.idle = 0;
   };
@@ -91,6 +91,7 @@
     const st = STYLES[name]; if (!st) return; this.styleName = name;
     for (const k in st) if (this.mats[k]) this.mats[k].color.set(st[k]).convertSRGBToLinear();
   };
+  Viewer.prototype.setNeighbours = function (on) { this.showNb = !!on; (this.site && this.site.userData.nb || []).forEach(m => m.visible = this.floor === 'all' && this.showNb); this.occluders = null; };
   Viewer.prototype.setSpin = function (on) { this.spin = !!on; this.idle = on ? 9999 : 0; };
   Viewer.prototype.showRear = function () {
     this.setFloor('all'); this.thetaGoal = Math.PI - .5; this.phiGoal = 1.15; this.radGoal = 40; this.targetGoal = new THREE.Vector3(0, 5, 0);
