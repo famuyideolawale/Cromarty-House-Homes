@@ -1,0 +1,304 @@
+<title>Showcase Fame Living</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Fame Living's property showcase: explore every project in 3D, see prices and estimated yields, and reserve off-plan homes in Aberdeen.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Showcase · Fame Living">
+<meta property="og:description" content="Explore Fame Living's projects in 3D, from off-plan flats on Aberdeen's Regent Quay.">
+<meta property="og:image" content="assets/cromarty-house.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#24342B">
+<link rel="icon" href="assets/fl-icon.png">
+<script>
+/* The original Cromarty House link (cromarty-house-homes.onrender.com) keeps opening Cromarty House.
+   Visitors who click "All projects" from inside a project still reach this page. */
+(function(){try{
+  if(location.hostname==='cromarty-house-homes.onrender.com'&&!(document.referrer&&document.referrer.indexOf(location.host)>-1)&&!/[?&]all\b/.test(location.search))
+    location.replace('cromarty-house/'+location.hash);
+}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@400;500;600&display=swap">
+<style>
+/* Layout: a forest-green opening band with the isometric cube drawing itself, then one full-width banner per project,
+   then the Acquire / Enhance / Deliver sequence and contact. Colours from fameliving.co.uk, set sharper and bigger. */
+:root{
+  --forest:#24342B;      /* deep brand green, hero and footer ground */
+  --green:#475E4F;       /* fameliving.co.uk primary green */
+  --gold:#E0A240;        /* brand gold, the single accent */
+  --sand:#CDB083;        /* soft gold for lines and small labels on dark */
+  --bg:#F3F4F0;          /* page ground: a green-tinted white */
+  --card:#FFFFFF;
+  --ink:#1E2621;
+  --muted:#5F655F;
+  --line:#D9DDD5;
+  --kicker:#475E4F;
+  --on-dark:#EEF1EA;
+  --on-dark-muted:#A9B4AA;
+  --f-display:'Crimson Pro',Georgia,'Times New Roman',serif;
+  --f-body:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141B17;--card:#1B241F;--ink:#E9ECE6;--muted:#A3ACA4;--line:#2E3A33;--forest:#1A2620;--kicker:#E0A240;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141B17;--card:#1B241F;--ink:#E9ECE6;--muted:#A3ACA4;--line:#2E3A33;--forest:#1A2620;--kicker:#E0A240;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--forest)}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+@media (max-width:600px){.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+.label{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--forest) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--on-dark);border-bottom:1px solid color-mix(in srgb,var(--sand) 18%,transparent)}
+.top .wrap{display:flex;align-items:center;gap:20px;padding-block:14px}
+.mark{display:flex;align-items:center;gap:12px;text-decoration:none}
+.mark svg{width:34px;height:34px;flex:0 0 auto}
+.mark b{font-family:var(--f-body);font-weight:600;letter-spacing:.24em;font-size:1rem;line-height:1;display:block}
+.mark small{display:block;font-size:.6rem;letter-spacing:.5em;color:var(--sand);margin-top:4px}
+.mark i{font-style:normal;font-family:var(--f-display);font-size:1.15rem;color:var(--on-dark-muted);border-left:1px solid color-mix(in srgb,var(--sand) 35%,transparent);padding-left:12px;margin-left:2px}
+.top nav{margin-left:auto;display:flex;gap:26px;font-size:.88rem}
+.top nav a{text-decoration:none;color:var(--on-dark-muted);transition:color .2s}
+.top nav a:hover{color:var(--on-dark)}
+.top .cta{border:1px solid var(--gold);color:var(--on-dark);text-decoration:none;padding:9px 16px;border-radius:2px;font-size:.85rem;font-weight:500;transition:background .25s,color .25s;white-space:nowrap}
+.top .cta:hover{background:var(--gold);color:var(--forest)}
+@media (max-width:760px){.top nav{display:none}.top .cta{margin-left:auto}.mark i{display:none}}
+
+/* hero */
+.hero{background:var(--forest);color:var(--on-dark);overflow:hidden;position:relative}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:40px;align-items:center;padding-block:72px 88px}
+.hero .label{color:var(--sand)}
+.hero h1{font-size:clamp(3rem,7vw,6.2rem);font-weight:400;margin:22px 0 26px}
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.06em}
+.hero h1 .ln span{display:inline-block;animation:rise 1s var(--ease) both}
+.hero h1 .ln:nth-child(2) span{animation-delay:.12s}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero .lede{font-size:1.08rem;color:var(--on-dark-muted);max-width:52ch;animation:fade 1s .35s var(--ease) both}
+.hero .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;animation:fade 1s .5s var(--ease) both}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:#1E2621;text-decoration:none;font-weight:600;font-size:.92rem;padding:14px 22px;border-radius:2px;transition:transform .25s var(--ease),box-shadow .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px color-mix(in srgb,var(--gold) 70%,transparent)}
+.btn svg{width:16px;height:16px;transition:transform .3s var(--ease)}
+.btn:hover svg{transform:translateX(4px)}
+.btn.ghost{background:transparent;color:var(--on-dark);border:1px solid color-mix(in srgb,var(--on-dark) 30%,transparent)}
+.btn.ghost:hover{box-shadow:none;border-color:var(--on-dark)}
+.cube{width:100%;max-width:420px;justify-self:end;aspect-ratio:1;max-height:420px}
+.cube path,.cube polyline,.cube line{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.cube .edge{stroke:var(--sand);stroke-width:2.2;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.6s var(--ease) forwards}
+.cube .inner{stroke:var(--gold);stroke-width:2.2;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.2s 1s var(--ease) forwards}
+.cube .floor{stroke:color-mix(in srgb,var(--sand) 30%,transparent);stroke-width:1;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1s var(--ease) forwards}
+.cube .spin{transform-origin:200px 200px;animation:float 9s 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes rise{from{transform:translateY(105%)}to{transform:none}}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.stats{border-top:1px solid color-mix(in srgb,var(--sand) 22%,transparent)}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-block:0}
+.stat{padding:26px 20px 28px 0;display:flex;flex-direction:column;gap:6px}
+.stat+.stat{padding-left:24px;border-left:1px solid color-mix(in srgb,var(--sand) 22%,transparent)}
+.stat b{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,3.6vw,3rem);line-height:1;color:var(--on-dark);font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--on-dark-muted);max-width:22ch}
+.stats .src{grid-column:1/-1;font-size:.7rem;color:var(--on-dark-muted);opacity:.75;padding-bottom:18px}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr;padding-block:48px 56px}.cube{position:absolute;right:-90px;top:30px;width:300px;opacity:.28;pointer-events:none}.stats .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(3){padding-left:0;border-left:0}.stat:nth-child(n+3){border-top:1px solid color-mix(in srgb,var(--sand) 22%,transparent)}}
+
+/* projects */
+.projects{padding-block:96px 40px}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:end;margin-bottom:44px}
+.sec-head .label{color:var(--kicker)}
+.sec-head h2{font-size:clamp(2.4rem,5vw,4rem);margin-top:12px}
+.sec-head p{color:var(--muted);max-width:50ch}
+@media (max-width:800px){.sec-head{grid-template-columns:1fr;gap:16px}}
+.list{display:flex;flex-direction:column;gap:28px}
+.proj{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);background:var(--card);border:1px solid var(--line);border-radius:3px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .3s,box-shadow .4s var(--ease),transform .4s var(--ease)}
+a.proj:hover{border-color:var(--green);box-shadow:0 30px 60px -36px rgba(20,32,25,.5);transform:translateY(-3px)}
+.proj .media{position:relative;overflow:hidden;min-height:340px;background:var(--forest)}
+.proj .media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 1.2s var(--ease)}
+a.proj:hover .media img{transform:scale(1.1)}
+.proj .media::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,rgba(36,52,43,.0) 40%,rgba(36,52,43,.35))}
+.proj .badge{position:absolute;left:18px;top:18px;z-index:1;display:inline-flex;align-items:center;gap:8px;background:var(--forest);color:var(--on-dark);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;padding:7px 12px;border-radius:2px}
+.proj .badge i{width:7px;height:7px;border-radius:50%;background:#5FBF7F;box-shadow:0 0 0 0 rgba(95,191,127,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(95,191,127,0)}100%{box-shadow:0 0 0 0 rgba(95,191,127,0)}}
+.proj .info{padding:34px 34px 30px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.proj .where{color:var(--muted);font-size:.85rem}
+.proj h3{font-size:clamp(2.2rem,4vw,3.3rem)}
+.proj .sum{color:var(--muted)}
+.proj dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:6px 0 0;border-top:1px solid var(--line);padding-top:16px}
+.proj dt{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.proj dd{margin:2px 0 0;font-family:var(--f-display);font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.proj .go{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;font-weight:600;font-size:.92rem}
+.proj .go .arrow{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:background .3s,border-color .3s,transform .4s var(--ease)}
+.proj .go .arrow svg{width:18px;height:18px}
+a.proj:hover .go .arrow{background:var(--gold);border-color:var(--gold);color:#1E2621;transform:rotate(-45deg)}
+.proj .tags{display:flex;flex-wrap:wrap;gap:6px}
+.proj .tags span{font-size:.72rem;border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--muted)}
+.proj.soon{background:var(--forest);color:var(--on-dark);border-color:var(--forest)}
+.proj.soon .media{display:grid;place-items:center;background:repeating-linear-gradient(135deg,transparent 0 22px,color-mix(in srgb,var(--sand) 7%,transparent) 22px 23px),var(--forest);border-right:1px solid color-mix(in srgb,var(--sand) 18%,transparent)}
+.proj.soon .media::after{display:none}
+.proj.soon .media svg{width:44%;max-width:200px;opacity:.9}
+.proj.soon .badge{background:var(--gold);color:#1E2621}
+.proj.soon .badge i{background:#1E2621;animation:none;box-shadow:none}
+.proj.soon .where,.proj.soon .sum{color:var(--on-dark-muted)}
+.proj.soon .btn{align-self:flex-start;margin-top:auto}
+@media (max-width:860px){.proj{grid-template-columns:1fr}.proj .media{min-height:0;aspect-ratio:16/10}.proj.soon .media{aspect-ratio:16/7}.proj .info{padding:24px 20px}.proj dd{font-size:1.35rem}}
+
+/* reveal on scroll: content is visible by default; only enhanced when JS runs */
+.js .rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+
+/* approach */
+.approach{padding-block:80px 96px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+.step{padding:28px 28px 8px 0;display:flex;flex-direction:column;gap:12px}
+.step+.step{padding-left:28px;border-left:1px solid var(--line)}
+.step .n{font-family:var(--f-display);font-style:italic;color:var(--gold);font-size:1.3rem}
+.step h3{font-size:2rem}
+.step p{color:var(--muted);font-size:.95rem}
+@media (max-width:800px){.steps{grid-template-columns:1fr}.step,.step+.step{padding:24px 0 16px;border-left:0;border-bottom:1px solid var(--line)}}
+
+/* contact */
+.foot{background:var(--forest);color:var(--on-dark)}
+.foot .wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;padding-block:72px 32px}
+.foot h2{font-size:clamp(2.2rem,4.6vw,3.6rem);font-weight:400}
+.foot h2 em{color:var(--gold)}
+.foot p{color:var(--on-dark-muted);margin-top:16px;max-width:46ch}
+.contact{display:flex;flex-direction:column;gap:18px;font-size:.95rem}
+.contact .label{color:var(--sand);display:block;margin-bottom:4px}
+.contact a{text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--sand) 40%,transparent)}
+.contact a:hover{border-color:var(--gold)}
+.legal{grid-column:1/-1;border-top:1px solid color-mix(in srgb,var(--sand) 18%,transparent);padding-top:22px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:.75rem;color:var(--on-dark-muted)}
+@media (max-width:800px){.foot .wrap{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.cube .edge,.cube .inner,.cube .floor{stroke-dashoffset:0}.js .rv{opacity:1;transform:none}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Fame Living showcase, home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linejoin="round"><path d="M20 3 35 11.5v17L20 37 5 28.5v-17z"/><path d="M5 11.5 20 20l15-8.5M20 20v17"/></g></svg>
+      <span><b>FAME</b><small>LIVING</small></span>
+      <i>Showcase</i>
+    </a>
+    <nav aria-label="Sections"><a href="#projects">Projects</a><a href="#approach">Approach</a><a href="#contact">Contact</a><a href="https://fameliving.co.uk/" target="_blank" rel="noopener">fameliving.co.uk</a></nav>
+    <a class="cta" href="#projects">View projects</a>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="label">Fame Living · Property showcase</p>
+      <h1><span class="ln"><span>Evolving spaces.</span></span><span class="ln"><span><em>Exceptional</em> living.</span></span></h1>
+      <p class="lede">Fame Living acquires under-used UK buildings and turns them into homes that earn. This is where every project opens up: walk through the flats in 3D, compare prices and estimated yields, and reserve before work starts.</p>
+      <div class="acts">
+        <a class="btn" href="#projects">Explore the projects <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></a>
+        <a class="btn ghost" href="#contact">Talk to the team</a>
+      </div>
+    </div>
+    <svg class="cube" viewBox="0 0 400 400" aria-hidden="true">
+      <g class="spin">
+        <path class="floor" style="--len:900" d="M200 330 330 255 200 180 70 255z"/>
+        <path class="edge" style="--len:1400" d="M200 40 340 120v160l-140 80-140-80V120z"/>
+        <path class="inner" style="--len:240" d="M130 240v-62l35 20M270 240v-62l-35 20"/>
+        <polyline class="inner" style="--len:420" points="60,120 200,200 340,120"/>
+        <line class="inner" style="--len:170" x1="200" y1="200" x2="200" y2="360"/>
+      </g>
+    </svg>
+  </div>
+  <div class="stats">
+    <div class="wrap">
+      <div class="stat"><b data-count="9.2" data-dec="1" data-suf="%">9.2%</b><span>Highest rental yield, Aberdeen residential conversion</span></div>
+      <div class="stat"><b data-count="60" data-pre="£" data-suf="k+">£60k+</b><span>Average value added per refurbishment</span></div>
+      <div class="stat"><b>7–9%</b><span>Average annual yield across the completed portfolio</span></div>
+      <div class="stat"><b data-count="100" data-suf="%">100%</b><span>End-to-end managed, from acquisition to lettings</span></div>
+      <p class="src">Fame Living track record, as published on fameliving.co.uk. Past performance does not guarantee future returns.</p>
+    </div>
+  </div>
+</section>
+
+<section class="projects" id="projects">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="label">The projects</p><h2>Open a project. Walk the floors.</h2></div>
+      <p>Each project has its own site with floor plans traced from the architect's drawings, a 3D model of the building, a walk-through of every flat and a portfolio builder for investors.</p>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
+</section>
+
+<section class="approach" id="approach">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="label">How Fame Living works</p><h2>Acquiring. Enhancing. Delivering.</h2></div>
+      <p>Fame Living is the acquisition, sales and management division of Fame Capital Group, working across residential, commercial and semi-commercial property in the UK.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><span class="n">i.</span><h3>Acquire</h3><p>Find under-used buildings with planning potential: offices, retail units, mixed-use blocks and tired buy-to-lets.</p></div>
+      <div class="step rv"><span class="n">ii.</span><h3>Enhance</h3><p>Convert and refurbish with Fame Property Services, to the architect's drawings and current building standards.</p></div>
+      <div class="step rv"><span class="n">iii.</span><h3>Deliver</h3><p>Sell to owners and investors, then let and manage the homes, with compliance and reporting handled.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div>
+      <p class="label" style="color:var(--sand)">Contact</p>
+      <h2 style="margin-top:12px">Ask about a project, or <em>reserve</em> early.</h2>
+      <p>Tell the team which project interests you, whether you are buying to live or to invest, and how many homes you are looking for.</p>
+    </div>
+    <div class="contact">
+      <div><span class="label">Email</span><a href="mailto:info@fameliving.com">info@fameliving.com</a></div>
+      <div><span class="label">Phone</span><a href="tel:+441224011770">+44 (0)1224 011770</a></div>
+      <div><span class="label">Office</span>Suite 4, International Base, Greenwell Road, Aberdeen AB12 3AX</div>
+      <div><span class="label">Company site</span><a href="https://fameliving.co.uk/" target="_blank" rel="noopener">fameliving.co.uk</a></div>
+    </div>
+    <div class="legal"><span>© <span id="yr">2026</span> Fame Living Ltd, part of Fame Capital Group.</span><span>3D views are generated from architects' drawings. Prices, yields and timings are estimates and may change.</span></div>
+  </div>
+</footer>
+
+<script>
+/* ---------- PROJECTS: add a new project here; it appears as a banner automatically ---------- */
+const PROJECTS=[
+  {slug:'cromarty-house',name:'Cromarty House',where:'67–72 Regent Quay, Aberdeen AB11 5AR',status:'Selling now',
+   summary:'A five-storey building facing Aberdeen Harbour, converting its four upper floors into 28 one and two bedroom flats, with a new garden, EV charging and cycle store.',
+   image:'assets/cromarty-house.jpg',facts:[['Homes','28'],['From','£90,000'],['Est. yield','7.9–9.5%']],
+   tags:['Off-plan','1 and 2 bed','3D walk-through','Harbour views']},
+  {soon:true,name:'Next project',where:'Aberdeen',status:'Coming soon',
+   summary:'A new Fame Living project is being prepared for the showcase, with plans, 3D views and prices to follow. Register now to hear first.'}
+];
+const ARROW='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+const CUBE='<svg viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M200 40 340 120v160l-140 80-140-80V120z" stroke="var(--sand)" stroke-width="3" stroke-dasharray="10 10"/><path d="M60 120 200 200 340 120M200 200v160" stroke="var(--gold)" stroke-width="3"/></g></svg>';
+document.getElementById('list').innerHTML=PROJECTS.map(p=>p.soon?`
+  <div class="proj soon rv">
+    <div class="media"><span class="badge"><i></i>${p.status}</span>${CUBE}</div>
+    <div class="info"><p class="where">${p.where}</p><h3>${p.name}</h3><p class="sum">${p.summary}</p>
+      <a class="btn" href="#contact">Hear about it first ${ARROW}</a></div>
+  </div>`:`
+  <a class="proj rv" href="${p.slug}/">
+    <div class="media"><img src="${p.image}" alt="3D view of ${p.name} from the street" loading="lazy"><span class="badge"><i></i>${p.status}</span></div>
+    <div class="info">
+      <p class="where">${p.where}</p><h3>${p.name}</h3><p class="sum">${p.summary}</p>
+      <div class="tags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+      <dl>${p.facts.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+      <div class="go"><span>Explore ${p.name}</span><span class="arrow">${ARROW}</span></div>
+    </div>
+  </a>`).join('');
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+/* ---------- motion: reveal on scroll, count up the track record ---------- */
+(function(){
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce||!('IntersectionObserver' in window))return;
+  document.documentElement.classList.add('js');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(el.classList.contains('step')?[...el.parentNode.children].indexOf(el)*.12:0)+'s';io.observe(el)});
+  // anything already on screen shows at once
+  requestAnimationFrame(()=>document.querySelectorAll('.rv').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<innerHeight)el.classList.add('in')}));
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const end=+el.dataset.count,dec=+(el.dataset.dec||0),pre=el.dataset.pre||'',suf=el.dataset.suf||'',t0=performance.now()+900,d=1400;
+    const tick=t=>{const k=Math.min(1,Math.max(0,(t-t0)/d)),e=1-Math.pow(1-k,3);el.textContent=pre+(end*e).toFixed(dec)+suf;if(k<1)requestAnimationFrame(tick)};
+    requestAnimationFrame(tick);
+  });
+})();
+</script>
