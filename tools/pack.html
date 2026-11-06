@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Cromarty House · Investor pack</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Investor pack: generated to investor-pack.pdf by tools/make-pack.js. Edit the text here, then run: node tools/make-pack.js */
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Hanken Grotesk',sans-serif;color:#121C24;font-size:10.5pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:210mm;height:297mm;padding:16mm 16mm 14mm;position:relative;page-break-after:always;overflow:hidden}
+.pg:last-child{page-break-after:auto}
+h1,h2,h3{font-family:'Big Shoulders Display',sans-serif;text-transform:uppercase;margin:0;line-height:1}
+h2{font-size:30pt;margin-bottom:6mm}
+h3{font-size:15pt;margin:6mm 0 3mm}
+.eb{font-size:8pt;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#56636D;margin-bottom:2mm}
+.foot{position:absolute;left:16mm;right:16mm;bottom:8mm;display:flex;justify-content:space-between;font-size:7.5pt;color:#56636D;border-top:1px solid #CBD2D7;padding-top:2mm}
+.cover{background:#13293A;color:#EEF2F4;padding:0}
+.cover img{width:100%;height:150mm;object-fit:cover;object-position:60% 40%;display:block}
+.cover .in{padding:12mm 16mm}
+.cover h1{font-size:60pt}
+.cover h1 em{font-style:normal;color:#E5843C}
+.cover .eb{color:#A9B9C5}
+.cover p{color:#A9B9C5;font-size:12pt;max-width:140mm;margin:4mm 0 0}
+.facts{display:flex;gap:10mm;margin-top:8mm}
+.facts div b{display:block;font-family:'Big Shoulders Display',sans-serif;font-size:24pt;color:#fff}
+.facts div span{font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:#A9B9C5;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:8.6pt}
+th{text-align:left;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;color:#56636D;border-bottom:1.5px solid #121C24;padding:1.6mm 1.5mm}
+td{padding:1.05mm 1.5mm;border-bottom:1px solid #DDE2E5}
+td.n,th.n{text-align:right;font-family:'JetBrains Mono',monospace;font-size:8pt}
+tr.fl td{background:#EDEFF0;font-weight:700;font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7mm}
+.stat{border-top:3px solid #C2601A;padding-top:2.5mm}
+.stat b{font-family:'Big Shoulders Display',sans-serif;font-size:24pt;display:block;line-height:1}
+.stat span{font-size:9pt}
+.stat i{display:block;font-style:normal;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;color:#56636D;font-weight:700;margin-top:1mm}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6mm}
+.note{font-size:8pt;color:#56636D}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.plans figure{margin:0;border:1px solid #CBD2D7;padding:2mm;height:58mm;display:flex;flex-direction:column}
+.plans img{flex:1;min-height:0;object-fit:contain;width:100%}
+.plans figcaption{font-size:8pt;font-weight:600;margin-top:1.5mm}
+.shot{width:100%;border-radius:2px;display:block}
+ul{margin:0;padding-left:5mm}
+li{margin:.8mm 0}
+.call{background:#13293A;color:#EEF2F4;padding:6mm;border-radius:2px;margin-top:6mm}
+.call b{font-family:'Big Shoulders Display',sans-serif;font-size:16pt;text-transform:uppercase;display:block}
+.tl td:first-child{width:6mm}
+.dot{width:3mm;height:3mm;border-radius:50%;border:1.5px solid #8C98A2;display:inline-block}
+.dot.done{background:#2C7A57;border-color:#2C7A57}.dot.now{background:#C2601A;border-color:#C2601A}
+</style></head><body>
+<script src="../model.js"></script>
+<div id="out"></div>
+<script>
+const M=window.CH_MODEL,FL=['Ground','First','Second','Third','Fourth'];
+const ASPECT={1:'Harbour and side',2:'Rear and side',3:'Rear',4:'Rear',5:'Side and rear',6:'Harbour and side',7:'Harbour'},HARB=new Set([1,6,7]);
+const units=[];for(let f=1;f<=4;f++)for(const fl of M.flats){const n=(f-1)*7+fl.n;units.push({n,pos:fl.n,f,beds:fl.beds,area:fl.area,sqft:Math.round(fl.area*10.764),price:fl.beds===2?110000:90000,rent:(fl.beds===2?840:595)+(f-1)*5+(HARB.has(fl.n)?20:0)})}
+const gbp=v=>'£'+Math.round(v).toLocaleString('en-GB');
+const COST=1500,VOID=3,FEES=1000;
+function port(list,ads){const p=list.reduce((s,u)=>s+u.price,0),r=list.reduce((s,u)=>s+u.rent,0),tax=(ads?p*.08:0)+FEES*list.length,net=r*12*(52-VOID)/52-COST*list.length;return{n:list.length,p,r,g:r*12/p*100,net,ny:net/(p+tax)*100,tax,out:p+tax}}
+const foot=n=>`<div class="foot"><span>Cromarty House · 67–72 Regent Quay, Aberdeen AB11 5AR · A Fame Living development</span><span>Investor pack · November 2026 · ${n}</span></div>`;
+let h='';
+// 1 cover
+h+=`<section class="pg cover"><img src="pack-media/r_gold.jpg" alt=""><div class="in"><div class="eb">Fame Living · Investor pack · November 2026</div><h1>Cromarty House<br><em>28 homes on the quay</em></h1>
+<p>Off-plan one and two bedroom flats in a five-storey building facing Aberdeen Harbour, with planning permission to convert the four upper floors into 28 homes.</p>
+<div class="facts"><div><b>28</b><span>Flats</span></div><div><b>£90k</b><span>1 bed</span></div><div><b>£110k</b><span>2 bed</span></div><div><b>${Math.min(...units.map(u=>u.rent*1200/u.price)).toFixed(1)}–${Math.max(...units.map(u=>u.rent*1200/u.price)).toFixed(1)}%</b><span>Est. gross yield</span></div></div></div></section>`;
+// 2 price list
+h+=`<section class="pg"><div class="eb">Price list</div><h2>Every flat</h2><table><thead><tr><th>Flat</th><th>Beds</th><th class="n">m²</th><th class="n">sq ft</th><th>Aspect</th><th class="n">Price</th><th class="n">Est. rent pcm</th><th class="n">Gross yield</th></tr></thead><tbody>`;
+for(let f=1;f<=4;f++){h+=`<tr class="fl"><td colspan="8">${FL[f]} floor</td></tr>`;units.filter(u=>u.f===f).forEach(u=>{h+=`<tr><td>Flat ${u.n}</td><td>${u.beds}</td><td class="n">${u.area}</td><td class="n">${u.sqft}</td><td>${ASPECT[u.pos]}</td><td class="n">${gbp(u.price)}</td><td class="n">${gbp(u.rent)}</td><td class="n">${(u.rent*12/u.price*100).toFixed(1)}%</td></tr>`})}
+h+=`</tbody></table><p class="note" style="margin-top:3mm">Areas from the architect's first-floor warrant drawing (flats 1 and 2 as stated; others measured). Floors 2–4 use the first-floor layout until their drawings are issued. Rents are estimates set close to Citylets Q2 2026 Aberdeen averages (1 bed £565, 2 bed £814), adjusted for a newly converted flat with a lift and a shared garden. Availability changes; check the website for live status.</p>${foot(2)}</section>`;
+// 3 portfolios
+const ex=[['One 1 bed flat (Flat 3)',[units[2]]],['One 2 bed flat (Flat 6)',[units[5]]],['Harbour side, first floor (Flats 1, 6, 7)',[units[0],units[5],units[6]]],['A whole floor (Flats 8–14)',units.filter(u=>u.f===2)],['The whole building (28 flats)',units]];
+h+=`<section class="pg"><div class="eb">Portfolio examples</div><h2>One flat or a whole floor</h2><table><thead><tr><th>Portfolio</th><th class="n">Price</th><th class="n">Rent pcm</th><th class="n">Gross</th><th class="n">Net income/yr</th><th class="n">ADS + fees</th><th class="n">Net yield</th></tr></thead><tbody>`;
+ex.forEach(([t,l])=>{const r=port(l,true);h+=`<tr><td>${t}</td><td class="n">${gbp(r.p)}</td><td class="n">${gbp(r.r)}</td><td class="n">${r.g.toFixed(1)}%</td><td class="n">${gbp(r.net)}</td><td class="n">${gbp(r.tax)}</td><td class="n">${r.ny.toFixed(1)}%</td></tr>`});
+h+=`</tbody></table><p class="note" style="margin-top:3mm">Assumes running costs of £${COST.toLocaleString()} per flat a year (factor fees, insurance, letting management, repairs), ${VOID} empty weeks a year, legal fees of £${FEES.toLocaleString()} per flat, and the Additional Dwelling Supplement at 8% for a buyer who already owns a home (Revenue Scotland). LBTT is 0% on a main home under £145,000. Net yield = net income ÷ (price + tax and fees). Not financial or tax advice; confirm with your adviser and solicitor.</p>
+<h3>Payment schedule (indicative)</h3><table><tbody><tr><td><b>£2,000</b></td><td>Reservation fee — takes the flat off the market; deducted from the price</td></tr><tr><td><b>10%</b></td><td>On concluding missives — deposit, less the reservation fee</td></tr><tr><td><b>90%</b></td><td>On completion — balance when the flat is finished and signed off</td></tr></tbody></table>
+<p class="note" style="margin-top:2mm">To be confirmed by Fame Living in the reservation agreement. Multi-unit, whole-floor and whole-building terms are agreed directly with Fame Living.</p>
+<h3>Buying off-plan in Scotland</h3><ol><li>Choose your flats and reserve.</li><li>Your solicitor reviews the title, planning, warrant and specification.</li><li>Missives are concluded and the deposit is paid; the contract is now binding.</li><li>Completion on handover: the balance is paid and the keys are released.</li></ol>${foot(3)}</section>`;
+// 4 market
+h+=`<section class="pg"><div class="eb">The Aberdeen market</div><h2>The numbers behind the quay</h2><div class="stats">
+<div class="stat"><b>£814</b><span>Average rent, 2 bed flat; +2.0% in a year</span><i>Citylets Q2 2026</i></div>
+<div class="stat"><b>£565</b><span>Average rent, 1 bed flat; +0.9% in a year</span><i>Citylets Q2 2026</i></div>
+<div class="stat"><b>+26.6%</b><span>Rise in average Aberdeen rents over five years</span><i>Citylets Q2 2026</i></div>
+<div class="stat"><b>35 days</b><span>Average time to let a 2 bed; 54% let within a month</span><i>Citylets Q2 2026</i></div>
+<div class="stat"><b>+3.1%</b><span>House prices in the quarter, Aberdeen and Aberdeenshire; sales up 35%</span><i>ASPC Q2 2026</i></div>
+<div class="stat"><b>0.99</b><span>Selling price to asking price</span><i>ASPC Q2 2026</i></div></div>
+<h3>How the prices compare</h3><table><tbody>
+<tr><td>Cromarty House, 1 bed (new conversion)</td><td class="n">£90,000</td></tr><tr><td>Cromarty House, 2 bed (new conversion)</td><td class="n">£110,000</td></tr>
+<tr><td>Aberdeen, average flat or maisonette (ONS, August 2026, −6.1% in a year)</td><td class="n">£95,000</td></tr>
+<tr><td>Aberdeen City Centre, average flat sold in the last 12 months (Rightmove)</td><td class="n">£94,973</td></tr></tbody></table>
+<p class="note" style="margin-top:2mm">City averages include older and smaller flats that need work. Prices across Aberdeen have been flat over five years (ASPC: +0.3% a year), so the case for these flats rests on rental income rather than price growth.</p>
+<h3>Location</h3><ul><li>North side of Regent Quay, facing Aberdeen Harbour</li><li>0.46 miles to Aberdeen rail and bus stations; Union Square on foot</li><li>Direct access to the A956 for the A92 and A96; Dyce station for the airport</li></ul>
+<p class="note" style="margin-top:5mm">Sources: Citylets, Property Rental Report Aberdeen Q2 2026 (citylets.co.uk) · ASPC Q2 2026, reported by Scottish Legal News · ONS, House prices in Aberdeen, August 2026 · Rightmove, sold prices, Aberdeen City Centre · Revenue Scotland, LBTT and ADS. Figures checked 6 November 2026.</p>${foot(4)}</section>`;
+// 5 plans
+const TYPE={1:'2 bed · harbour and side',2:'1 bed · rear and side',3:'1 bed · rear',4:'1 bed · rear',5:'2 bed · side and rear',6:'2 bed · harbour and side',7:'1 bed · harbour'};
+h+=`<section class="pg"><div class="eb">Floor plans</div><h2>Seven layouts, every floor</h2><div class="plans">${[1,2,3,4,5,6,7].map(p=>{const u=units[p-1];return `<figure><img src="../plans/flat-${p}.jpg" alt=""><figcaption>Flats ${p}, ${p+7}, ${p+14}, ${p+21} · ${TYPE[p]} · ${u.area} m²</figcaption></figure>`}).join('')}
+<figure style="background:#13293A;color:#EEF2F4;border:0;padding:5mm"><b style="font-family:'Big Shoulders Display';font-size:16pt;text-transform:uppercase">See them in 3D</b><span style="font-size:9pt;color:#A9B9C5;margin-top:2mm">Open any flat on the website for its plan, a 3D model of the whole floor and a walk-through with the view from its windows.</span></figure></div>${foot(5)}</section>`;
+// 6 building + spec + timeline
+h+=`<section class="pg"><div class="eb">The building</div><h2>Built from the drawings</h2><div class="grid2"><img class="shot" src="pack-media/r_floor.jpg" alt=""><img class="shot" src="pack-media/tour_s.jpg" alt=""></div>
+<div class="grid2"><div><h3>Specification</h3><ul><li>Sprinklers in every flat (BS 9251)</li><li>Smoke and heat detectors (BS 5839-6); addressable alarm in common areas</li><li>Fire-rated flat entrance doors; two stairs with refuges</li><li>Mechanical ventilation with heat recovery (MVHR)</li><li>Fitted kitchen with hob and sink; space for a fridge-freezer</li><li>Shower room with WC and basin; utility with washer space in selected flats</li><li>8-person passenger lift; separate residents' entrance</li><li>Shared garden, EV charging bay, 3 accessible bays, storage for 30 bikes</li></ul><p class="note">Brands and finishes to be confirmed by Fame Living.</p></div>
+<div><h3>Progress</h3><table class="tl"><tbody>
+<tr><td><i class="dot done"></i></td><td>Planning permission granted (221401/DPP)</td><td class="n">Granted</td></tr>
+<tr><td><i class="dot done"></i></td><td>Building warrant drawings</td><td class="n">Dec 2024</td></tr>
+<tr><td><i class="dot done"></i></td><td>Landscaping plan (CHRQ-2510-LS)</td><td class="n">Oct 2025</td></tr>
+<tr><td><i class="dot now"></i></td><td>Reservations open</td><td class="n">Nov 2026</td></tr>
+<tr><td><i class="dot"></i></td><td>Start on site</td><td class="n">TBC</td></tr>
+<tr><td><i class="dot"></i></td><td>Completion and handover</td><td class="n">TBC</td></tr></tbody></table>
+<h3>Team</h3><table><tbody><tr><td>Developer</td><td>Fame Living</td></tr><tr><td>Architect</td><td>Fitzgerald + Associates Ltd</td></tr><tr><td>Landscape</td><td>astell associates</td></tr></tbody></table></div></div>
+<div class="call"><b>Reserve or ask a question</b>Register on the Cromarty House website and Fame Living's sales team will reply with availability and the reservation agreement.</div>
+<p class="note" style="margin-top:4mm">Important: images are 3D visualisations generated from the architect's drawings; furniture is indicative. Plans, areas, specification, prices, rents and timings may change and do not form part of any contract. Rental and yield figures are estimates for comparison only and are not a forecast or a guarantee. Property values can fall as well as rise. This pack is not financial, tax or legal advice.</p>${foot(6)}</section>`;
+document.getElementById('out').innerHTML=h;window.packReady=true;
+</script></body></html>

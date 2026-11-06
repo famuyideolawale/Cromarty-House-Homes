@@ -468,14 +468,23 @@
     const mats = this.mats = makeMats();
     if (this.mode !== 'building') { mats.ext.color.set('#dcd7cf').convertSRGBToLinear(); }
     sc.add(this.hemi = new THREE.HemisphereLight(0xf6f2ea, 0x6d655a, this.mode === 'tour' ? .72 : .85));
-    const sun = new THREE.DirectionalLight(0xffffff, .62); sun.position.set(-30, 60, -40); sc.add(sun);
-    const fill = new THREE.DirectionalLight(0xdfe8f0, .25); fill.position.set(30, 25, 40); sc.add(fill);
+    const sun = this.sun = new THREE.DirectionalLight(0xfff4e2, .62); sun.position.set(-30, 60, -40); sc.add(sun); sc.add(sun.target);
+    const fill = this.fill = new THREE.DirectionalLight(0xdfe8f0, .25); fill.position.set(30, 25, 40); sc.add(fill);
+    this.bg0 = opts.bg || '#dfe6ea';
+    if (this.mode !== 'tour') {
+      r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+      sun.castShadow = true; const sz = (window.innerWidth < 700 ? 1024 : 2048); sun.shadow.mapSize.set(sz, sz);
+      const c = sun.shadow.camera; const ext = this.mode === 'building' ? 48 : 30; c.left = -ext; c.right = ext; c.top = ext; c.bottom = -ext; c.near = 1; c.far = 220; sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
+    }
     this.labels = document.createElement('div'); this.labels.className = 'v3-labels'; host.appendChild(this.labels);
     this.anchors = [];
     this.levels = {};
     if (this.mode === 'building') this.initBuilding();
     else this.initFloor();
     this.bindControls();
+    this.scene.traverse(o => { if (o.isMesh) { o.castShadow = !(o.material && o.material.transparent); o.receiveShadow = true; } });
+    this.setTime(opts.hour != null ? opts.hour : 13, opts.season || 'summer');
+    if (opts.styleName) this.setStyle(opts.styleName);
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(host);
     this.loop = this.loop.bind(this); this.raf = requestAnimationFrame(this.loop);
   }
@@ -496,13 +505,51 @@
     // stairs: hide flights above the cut
     this.stairs.visible = true;
     if (this.stairsCut) { this.scene.remove(this.stairsCut); this.stairsCut = null; }
-    if (f !== 'all') { this.scene.remove(this.stairs); this.stairsCut = buildStairs(this.mats, f); this.scene.add(this.stairsCut); }
+    if (f !== 'all') { this.scene.remove(this.stairs); this.stairsCut = buildStairs(this.mats, f); this.scene.add(this.stairsCut); this.stairsCut.traverse(o => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; } }); }
     else if (!this.stairs.parent) this.scene.add(this.stairs);
     const y = f === 'all' ? 6 : f * H + 1;
     this.targetGoal = new THREE.Vector3(0, y, f === 'all' || f === 0 ? 5 : 0);
     this.radGoal = f === 'all' ? 66 : 46; this.phiGoal = f === 'all' ? 1.08 : .78;
     this.setAnchors();
     this.idle = 0;
+  };
+  /* sun position over Aberdeen (57.15 N, 2.09 W) for a summer or winter day; plan north is +z, east is -x */
+  Viewer.prototype.setTime = function (hour, season) {
+    this.hour = hour; this.season = season = season || this.season || 'summer';
+    const N = season === 'winter' ? 355 : 172, lat = 57.147 * Math.PI / 180;
+    const decl = 23.44 * Math.PI / 180 * Math.sin(2 * Math.PI * (284 + N) / 365);
+    const solar = hour - (season === 'summer' ? 1 : 0) - .14, HA = (solar - 12) * 15 * Math.PI / 180;
+    const sinAlt = Math.sin(lat) * Math.sin(decl) + Math.cos(lat) * Math.cos(decl) * Math.cos(HA), alt = Math.asin(sinAlt);
+    const az = Math.atan2(Math.sin(HA), Math.cos(HA) * Math.sin(lat) - Math.tan(decl) * Math.cos(lat)) + Math.PI;
+    const dir = new THREE.Vector3(-Math.cos(alt) * Math.sin(az), Math.sin(alt), Math.cos(alt) * Math.cos(az));
+    this.sunAlt = alt * 180 / Math.PI; this.sunAz = az * 180 / Math.PI;
+    const day = Math.max(0, Math.min(1, (this.sunAlt + 4) / 14));          // 0 night … 1 full day
+    const lowSun = Math.max(0, 1 - Math.abs(this.sunAlt - 6) / 10) * day;   // warm light near sunrise/sunset
+    const tgt = this.target ? this.target.clone() : new THREE.Vector3();
+    this.sun.position.copy(tgt).addScaledVector(dir.y > 0 ? dir : new THREE.Vector3(dir.x, .05, dir.z).normalize(), 110);
+    this.sun.target.position.copy(tgt); this.sun.target.updateMatrixWorld();
+    this.sun.intensity = .78 * day * (this.mode === 'tour' ? .35 : 1); this.sun.color.setHSL(.09, .2 + .5 * lowSun, .9 - .15 * lowSun);
+    this.sun.visible = day > .02;
+    this.fill.intensity = .1 + .18 * day;
+    this.hemi.intensity = this.mode === 'tour' ? .5 + .2 * day : .22 + .63 * day;
+    if (this.mode === 'tour') this.hemi.color.set(day < .5 ? '#ffe2b8' : '#f6f2ea');   // warm lamps after dark
+    const night = new THREE.Color('#162030'), dusk = new THREE.Color('#e7c7a6'), base = new THREE.Color(this.bg0);
+    const bgc = night.clone().lerp(base, day).lerp(dusk, lowSun * .55);
+    this.scene.background = bgc;
+    const g = this.mats.glass; g.emissive = g.emissive || new THREE.Color(); g.emissive.set('#ffbe6b').convertSRGBToLinear(); const outside = this.mode !== 'tour'; g.emissiveIntensity = outside ? 1.4 * (1 - day) : 0; g.opacity = outside ? .26 + .5 * (1 - day) : .26;
+    if (this.pano) this.pano.material.color.setRGB(.08 + .92 * day, .1 + .9 * day, .16 + .84 * day).lerp(new THREE.Color(1, .82, .66), lowSun * .5);
+    this.mats.exitGreen.emissiveIntensity = .6 + 1.2 * (1 - day);
+    return { alt: this.sunAlt, az: this.sunAz };
+  };
+  /* interior finish presets */
+  const STYLES = {
+    oak: { wood: '#b98f63', part: '#f6f3ee', sep: '#efebe4', sofa: '#4a6072', unit: '#e8e4dd', top: '#353a40', furnWood: '#8b6446', throw: '#c2601a' },
+    walnut: { wood: '#6e4a32', part: '#ede7dd', sep: '#e6dfd4', sofa: '#2f3b45', unit: '#2f3438', top: '#d8d2c8', furnWood: '#4a3224', throw: '#b08a4a' },
+    scandi: { wood: '#dccaa9', part: '#fbfaf7', sep: '#f5f3ee', sofa: '#a7b0b3', unit: '#ffffff', top: '#c3c8cc', furnWood: '#c9ad85', throw: '#7d9a8a' }
+  };
+  Viewer.prototype.setStyle = function (name) {
+    const st = STYLES[name]; if (!st) return; this.styleName = name;
+    for (const k in st) if (this.mats[k]) this.mats[k].color.set(st[k]).convertSRGBToLinear();
   };
   Viewer.prototype.setSpin = function (on) { this.spin = !!on; this.idle = on ? 9999 : 0; };
   Viewer.prototype.showRear = function () {
@@ -558,7 +605,7 @@
       sc.add(c.mesh(std('#f1eee8', { side: THREE.DoubleSide, emissive: '#d9d4cc', emissiveIntensity: .45 })));
       rooms.forEach(r => { const p = new THREE.PointLight(0xfff0dc, .32, 6.5, 1.8); p.position.set(r.x - CX, L * H + 2.4, r.z - CZ); sc.add(p); });
       const pano = new THREE.Mesh(new THREE.CylinderGeometry(160, 160, 120, 64, 1, true), new THREE.MeshBasicMaterial({ map: panoramaTex(), side: THREE.BackSide, fog: false }));
-      pano.material.map.wrapS = THREE.RepeatWrapping; pano.material.map.repeat.x = -1; pano.position.y = L * H + 20; sc.add(pano);
+      pano.material.map.wrapS = THREE.RepeatWrapping; pano.material.map.repeat.x = -1; pano.position.y = L * H + 20 - (L - 1) * 3; sc.add(pano); this.pano = pano;
       sc.add(buildSite(mats));
       sc.background = new THREE.Color('#e4e9ec');
       this.eyeY = L * H + 1.6; this.yaw = 0; this.pitch = -.05; this.L = L;
@@ -752,6 +799,7 @@
       cam.lookAt(this.target);
     }
     this.renderer.render(this.scene, cam);
+    if (!this.readyFired) { this.readyFired = true; if (this.opts.onReady) setTimeout(() => this.opts.onReady(), 0); }
     // labels: pinned to their 3D point, hidden when something solid is in front, and never stacked on each other
     if (this.anchors.length) this.updateLabels();
   };
