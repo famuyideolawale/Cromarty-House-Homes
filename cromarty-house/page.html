@@ -460,6 +460,20 @@ body.v3-locked .wa{display:none}
 @media (max-width:1280px) and (min-width:821px){nav.links{gap:15px}.brand span{display:none}}
 @media (max-width:560px){.brand{min-width:0}.brand b{font-size:1.2rem;overflow:hidden;text-overflow:ellipsis}}
 @media (max-width:420px){.brand b{font-size:1.04rem}.top .wrap{gap:10px}}
+/* calmer header: quiet back link, single-line brand, lighter controls */
+.top .wrap{gap:18px;padding-block:10px}
+.back-sc{height:auto;border:0;border-right:1px solid color-mix(in srgb,var(--ondeep) 22%,transparent);border-radius:0;padding:4px 14px 4px 0;gap:4px;font-size:.8rem;font-weight:500;color:var(--ondeep-muted);letter-spacing:.01em}
+.back-sc:hover{background:transparent;color:var(--ondeep)}
+.back-sc svg{width:13px;height:13px}
+.brand span{display:none}
+.brand b{font-size:1.35rem}
+nav.links{gap:20px;font-size:.88rem}
+nav.links a{opacity:.78}
+.cur{border-color:color-mix(in srgb,var(--ondeep) 18%,transparent);padding:6px 6px;font-size:.8rem;font-weight:500}
+.top .btn{padding:8px 14px;font-size:.85rem}
+@media (max-width:1100px) and (min-width:821px){nav.links{gap:14px;font-size:.84rem}}
+@media (max-width:560px){.back-sc{width:auto;min-height:36px;padding:0 10px 0 0}.back-sc svg{width:16px;height:16px}.back-sc span{display:none}.top .wrap{gap:10px}.brand b{font-size:1.08rem}}
+@media (max-width:370px){.brand b{font-size:.98rem}}
 </style>
 
 <header class="top">
