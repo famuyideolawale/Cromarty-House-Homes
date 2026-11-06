@@ -481,6 +481,15 @@ body.v3-locked .wa{display:none}
 .nb-btn{border:1px solid var(--line);background:var(--bg);padding:7px 11px;border-radius:3px;cursor:pointer;font-weight:600;font-size:.86rem}
 .nb-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .drawing-lg.zoom{cursor:zoom-out}.drawing-lg.zoom img{width:auto;max-width:none}
+.back-sc{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;height:38px;padding:0 12px 0 9px;border:1px solid color-mix(in srgb,var(--ondeep) 30%,transparent);border-radius:3px;color:var(--ondeep);text-decoration:none;font-size:.85rem;font-weight:600;letter-spacing:.02em}
+.back-sc:hover{background:color-mix(in srgb,var(--ondeep) 10%,transparent)}
+.back-sc svg{width:16px;height:16px}
+@media (min-width:821px){nav.links a.nav-all{display:none}}
+@media (max-width:560px){.back-sc{width:38px;padding:0;justify-content:center}.back-sc span{display:none}.top .wrap{gap:12px}}
+.top .btn,.brand span,.brand b{white-space:nowrap}
+@media (max-width:1280px) and (min-width:821px){nav.links{gap:15px}.brand span{display:none}}
+@media (max-width:560px){.brand{min-width:0}.brand b{font-size:1.2rem;overflow:hidden;text-overflow:ellipsis}}
+@media (max-width:420px){.brand b{font-size:1.04rem}.top .wrap{gap:10px}}
 </style>
 </head>
 <body>
@@ -488,6 +497,7 @@ body.v3-locked .wa{display:none}
 
 <header class="top">
   <div class="wrap">
+    <a class="back-sc" href="../" title="Back to all Fame Living projects" aria-label="Back to Fame Living Showcase, all projects"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Showcase</span></a>
     <a class="brand" href="#homes"><b>Hilltown</b><span>By Fame Living · Hilltown, Dundee</span></a>
     <nav class="links" id="nav" aria-label="Sections">
       <a href="../" class="nav-all" title="All Fame Living projects">All projects</a><a href="#homes">Homes</a><a href="#building">Building</a><a href="#invest">Invest</a><a href="#market">Market</a><a href="#developer">Developer</a><a href="#location">Location</a><a href="#enquire" class="nav-cta">Register interest</a>
