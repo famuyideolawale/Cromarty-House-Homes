@@ -432,6 +432,8 @@ body.v3-locked .wa{display:none}
 .v3.bview .v3-opts{top:10px}
 .v3-opt-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(248,249,249,.92);color:#13293A;padding:7px 11px;border-radius:3px;font-weight:700;font-size:.8rem;cursor:pointer}
 .v3-opt-btn svg{width:15px;height:15px}
+.v3-optrow{display:flex;gap:6px;flex-wrap:wrap}
+.v3.labels-off .v3-labels{display:none}
 .v3-panel{margin-top:6px;background:rgba(248,249,249,.96);color:#13293A;border-radius:4px;padding:12px;width:236px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .v3-panel label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:flex;justify-content:space-between}
 .v3-panel output{font-family:var(--f-mono);letter-spacing:0}
@@ -1139,13 +1141,16 @@ function mount(host,opts){
 
 /* ---------- 3D: shared light and finish settings, loading screen ---------- */
 const LIGHT={hour:13,season:'summer',style:'oak'};
+let labelsOn=true;try{labelsOn=localStorage.getItem('ch-labels')!=='off'}catch(e){}
+const ICON_TAG='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2h7l7 7-6 6-7-7V2z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="4.5" cy="5.5" r="1.3" fill="currentColor"/></svg>';
+const ICON_TAG_OFF='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2h7l7 7-6 6-7-7V2z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M1 15L15 1" stroke="currentColor" stroke-width="1.6"/></svg>';
 const ICON_SUN='<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><path d="M8 0v3M8 13v3M0 8h3M13 8h3M2.3 2.3l2.1 2.1M11.6 11.6l2.1 2.1M2.3 13.7l2.1-2.1M11.6 4.4l2.1-2.1" stroke="currentColor" stroke-width="1.5"/></svg>';
 const hhmm=h=>String(Math.floor(h)).padStart(2,'0')+':'+String(Math.round((h%1)*60)).padStart(2,'0');
 const COMPASS=['north','north-east','east','south-east','south','south-west','west','north-west'];
 function lightPanel(host,getV,withStyle){
   if(host.querySelector('.v3-opts'))return;
   const w=document.createElement('div');w.className='v3-opts';
-  w.innerHTML=`<button type="button" class="v3-opt-btn" aria-expanded="false">${ICON_SUN}${withStyle?'Light and finish':'Sun and time'}</button>
+  w.innerHTML=`<div class="v3-optrow"><button type="button" class="v3-opt-btn" aria-expanded="false">${ICON_SUN}${withStyle?'Light and finish':'Sun and time'}</button><button type="button" class="v3-opt-btn v3-lbl"></button></div>
   <div class="v3-panel" hidden>
     <label>Time of day <output>${hhmm(LIGHT.hour)}</output></label>
     <input type="range" min="4" max="23.5" step="0.25" value="${LIGHT.hour}" aria-label="Time of day">
@@ -1153,6 +1158,10 @@ function lightPanel(host,getV,withStyle){
     ${withStyle?`<label>Interior finish</label><div class="v3-seg" data-k="style">${[['oak','Oak'],['walnut','Walnut'],['scandi','Scandi']].map(([v,t])=>`<button type="button" data-v="${v}" aria-pressed="${LIGHT.style===v}">${t}</button>`).join('')}</div>`:''}
     <p class="v3-sunnote"></p>
   </div>`;
+  const lb=w.querySelector('.v3-lbl');
+  const syncLbl=()=>{host.classList.toggle('labels-off',!labelsOn);lb.innerHTML=(labelsOn?ICON_TAG_OFF+'Hide labels':ICON_TAG+'Show labels');lb.setAttribute('aria-pressed',String(!labelsOn))};
+  lb.onclick=()=>{labelsOn=!labelsOn;try{localStorage.setItem('ch-labels',labelsOn?'on':'off')}catch(e){}document.querySelectorAll('.v3').forEach(h=>h.classList.toggle('labels-off',!labelsOn));document.querySelectorAll('.v3-lbl').forEach(b=>{b.innerHTML=labelsOn?ICON_TAG_OFF+'Hide labels':ICON_TAG+'Show labels';b.setAttribute('aria-pressed',String(!labelsOn))});track('labels',{on:labelsOn})};
+  syncLbl();
   const btn=w.querySelector('.v3-opt-btn'),panel=w.querySelector('.v3-panel'),rng=w.querySelector('input'),out=w.querySelector('output'),note=w.querySelector('.v3-sunnote');
   const apply=()=>{const v=getV();out.textContent=hhmm(LIGHT.hour);if(!v)return;const s=v.setTime(LIGHT.hour,LIGHT.season);
     note.textContent=s.alt<-.5?'The sun has set; windows lit.':`Sun ${Math.round(s.alt)}° above the horizon, from the ${COMPASS[Math.round((((s.az%360)+360)%360)/45)%8]}. Aberdeen on ${LIGHT.season==='summer'?'21 June':'21 December'}.`};
