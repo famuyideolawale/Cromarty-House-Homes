@@ -485,13 +485,13 @@
     host.appendChild(r.domElement); r.domElement.style.touchAction = 'none';
     r.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); this.lost = true; if (opts.onLost) setTimeout(() => opts.onLost(), 50); }, false);
     const sc = this.scene = new THREE.Scene();
-    sc.background = new THREE.Color(opts.bg || '#dfe6ea');
+    sc.background = new THREE.Color(opts.bg || '#e2e8e0');
     this.cam = new THREE.PerspectiveCamera(this.mode === 'tour' ? 76 : 40, W0 / H0, .05, 600);
     this.mats = makeMats();
     sc.add(this.hemi = new THREE.HemisphereLight(0xf6f2ea, 0x6d655a, this.mode === 'tour' ? .72 : .85));
     const sun = this.sun = new THREE.DirectionalLight(0xfff4e2, .62); sun.position.set(-30, 60, -40); sc.add(sun); sc.add(sun.target);
     const fill = this.fill = new THREE.DirectionalLight(0xdfe8f0, .25); fill.position.set(30, 25, 40); sc.add(fill);
-    this.bg0 = opts.bg || '#dfe6ea';
+    this.bg0 = opts.bg || '#e2e8e0';
     if (this.mode !== 'tour') {
       r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
       sun.castShadow = true; const sz = (window.innerWidth < 700 ? 1024 : 2048); sun.shadow.mapSize.set(sz, sz);
