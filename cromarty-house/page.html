@@ -499,6 +499,17 @@ nav.links a{opacity:.78}
 :root[data-theme="light"] .top .btn,:root[data-theme="light"] .hero .btn:not(.ghost){color:#fff}
 :root[data-theme="light"] .top .cur option{color:#111}
 @media (max-width:820px){:root[data-theme="light"] nav.links a.nav-cta{color:var(--beacon)}}
+.foot-theme{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:transparent;color:inherit;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:999px;padding:7px 14px 7px 11px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s}
+.foot-theme:hover{background:color-mix(in srgb,currentColor 8%,transparent);border-color:color-mix(in srgb,currentColor 45%,transparent)}
+.foot-theme svg{width:16px;height:16px}
+.top .theme-btn{display:none!important}
+/* Light theme, lower page: the enquiry band and investor-pack card become the same soft brand wash as the top */
+:root[data-theme="light"] .enquire,:root[data-theme="light"] .inv-card.pack{--deep:#E7EEF2;--ondeep:#13293A;--ondeep-muted:color-mix(in srgb,#13293A 62%,#E7EEF2);--beacon:#B4561A}
+:root[data-theme="light"] .enquire{border-top:3px solid #13293A}
+:root[data-theme="light"] .inv-card.pack{border-color:color-mix(in srgb,#13293A 16%,transparent)}
+:root[data-theme="light"] .enquire .field input,:root[data-theme="light"] .enquire .field select,:root[data-theme="light"] .enquire .field textarea,:root[data-theme="light"] .inv-card.pack input{background:#FFFFFF;border-color:color-mix(in srgb,#13293A 20%,transparent);color:#13293A}
+:root[data-theme="light"] .enquire .btn,:root[data-theme="light"] .inv-card.pack .btn{color:#fff}
+footer .foot-theme{margin-top:6px}
 </style>
 
 <header class="top">
@@ -863,6 +874,7 @@ nav.links a{opacity:.78}
 <footer><div class="wrap">
   <span>Cromarty House, 67–72 Regent Quay, Aberdeen AB11 5AR.</span>
   <span>A <a href="../" style="color:inherit">Fame Living</a> development. Floor plans and 3D views are traced from the architect's drawings (Fitzgerald + Associates). Furniture is indicative. Images, plans and figures may change during construction and do not form part of any contract.</span>
+  <button class="foot-theme" type="button" data-theme-toggle><svg class="i-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.6A7 7 0 0 1 7.4 3.5a7 7 0 1 0 9.1 9.1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Light theme</span></button>
 </div></footer>
 
 <dialog class="unit" id="dlg" aria-labelledby="d-title">
