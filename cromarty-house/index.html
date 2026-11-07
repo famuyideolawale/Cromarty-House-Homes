@@ -480,6 +480,11 @@ nav.links a{opacity:.78}
 @media (max-width:1100px) and (min-width:821px){nav.links{gap:14px;font-size:.84rem}}
 @media (max-width:560px){.back-sc{width:auto;min-height:36px;padding:0 10px 0 0}.back-sc svg{width:16px;height:16px}.back-sc span{display:none}.top .wrap{gap:10px}.brand b{font-size:1.08rem}}
 @media (max-width:370px){.brand b{font-size:.98rem}}
+.more-row{grid-column:1/-1;display:flex;justify-content:center;padding:6px 0 2px}
+.more-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:12px 20px;border-radius:3px;font-weight:600;font-size:.92rem;cursor:pointer;width:100%;justify-content:center}
+.more-btn:hover{border-color:var(--ink)}
+.more-btn svg{width:14px;height:14px;transition:transform .2s}
+.more-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
 </style>
 </head>
 <body>
@@ -1119,11 +1124,16 @@ const match=u=>(state.beds==='all'||u.beds==+state.beds)&&(state.floor==='all'||
 const heartSVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3.1 4.5 6.8 4.5c2.1 0 3.5 1.2 4.2 2.4.7-1.2 2.1-2.4 4.2-2.4 3.7 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>';
 const thumbCache={};
 function thumb(pos){if(!thumbCache[pos])thumbCache[pos]=planSVG(mkSVG(),{pos,thumb:true}).outerHTML;return thumbCache[pos]}
+/* on phones the list shows 5 flats at a time, with Show all / Show fewer; changing a filter folds it back */
+const PEEK=5,phone=matchMedia('(max-width:760px)');let gridOpen=false,gridKey='';
+phone.addEventListener&&phone.addEventListener('change',()=>applyFilters());
 function applyFilters(){
   const list=units.filter(match);document.getElementById('count').textContent=list.length;
   const grid=document.getElementById('grid');grid.innerHTML='';
+  const key=JSON.stringify(state);if(key!==gridKey){gridKey=key;gridOpen=false}
+  const fold=phone.matches&&list.length>PEEK,shown=fold&&!gridOpen?list.slice(0,PEEK):list;
   if(!list.length){grid.innerHTML='<div class="empty">No flats match these filters.<br><button class="btn ghost" type="button" id="reset">Clear filters</button></div>';document.getElementById('reset').onclick=resetFilters;return}
-  for(const u of list){
+  for(const u of shown){
     const c=document.createElement('article');c.className='card';c.tabIndex=0;
     c.innerHTML=`<div class="plan">${thumb(u.pos)}</div><div class="body">
       <div class="row1"><span><span class="name">Flat ${u.n}</span> <span class="floorlbl">${FLOORNAME[u.floor]} floor</span></span><button class="heart" type="button" aria-label="Save flat ${u.n}" aria-pressed="${favs.has(u.n)}">${heartSVG}</button></div>
@@ -1132,6 +1142,14 @@ function applyFilters(){
     c.querySelector('.heart').addEventListener('click',e=>{e.stopPropagation();toggleFav(u.n)});
     c.addEventListener('click',()=>openUnit(u.n));c.addEventListener('keydown',e=>{if(e.key==='Enter')openUnit(u.n)});
     grid.appendChild(c);
+  }
+  if(fold){
+    const r=document.createElement('div');r.className='more-row';
+    r.innerHTML=`<button class="more-btn" type="button" aria-expanded="${gridOpen}" aria-controls="grid">${gridOpen?'Show fewer':`Show all ${list.length} flats`}<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>`;
+    r.querySelector('button').onclick=()=>{const was=gridOpen;gridOpen=!gridOpen;applyFilters();
+      if(was)document.getElementById('homes').scrollIntoView({behavior:'smooth'});
+      else{const cs=grid.querySelectorAll('.card');cs[PEEK]&&cs[PEEK].focus({preventScroll:true})}};
+    grid.appendChild(r);
   }
 }
 function resetFilters(){
