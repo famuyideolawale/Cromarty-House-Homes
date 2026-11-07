@@ -211,7 +211,11 @@ a.proj:hover .go .arrow{background:var(--gold);border-color:var(--gold);color:#1
 .top .theme-btn{display:none!important}
 /* Light theme, lower page: the contact footer becomes a sage wash with forest type */
 :root[data-theme="light"] .foot{--forest:#E8EDE5;--on-dark:#1F2E25;--on-dark-muted:#55635A;--sand:#8A6A33;--gold:#B87F22;border-top:3px solid #24342B}
-.foot .legal{align-items:center}
+.foot .legal{align-items:center;flex-wrap:nowrap;gap:20px}
+.legal-txt{min-width:0}
+.foot .foot-theme{flex:0 0 auto;padding:5px 12px 5px 9px;font-size:.78rem}
+@media (min-width:761px){.legal-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+@media (max-width:760px){.foot .legal{flex-direction:column;align-items:flex-start;gap:10px}}
 </style>
 </head>
 <body>
@@ -300,7 +304,7 @@ a.proj:hover .go .arrow{background:var(--gold);border-color:var(--gold);color:#1
       <div><span class="label">Office</span>Suite 4, International Base, Greenwell Road, Aberdeen AB12 3AX</div>
       <div><span class="label">Company site</span><a href="https://fameliving.co.uk/" target="_blank" rel="noopener">fameliving.co.uk</a></div>
     </div>
-    <div class="legal"><button class="foot-theme" type="button" data-theme-toggle><svg class="i-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.6A7 7 0 0 1 7.4 3.5a7 7 0 1 0 9.1 9.1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Light theme</span></button><span>© <span id="yr">2026</span> Fame Living Ltd, part of Fame Capital Group.</span><span>3D views are generated from architects' drawings. Prices, yields and timings are estimates and may change.</span></div>
+    <div class="legal"><span class="legal-txt">© <span id="yr">2026</span> Fame Living Ltd, part of Fame Capital Group · 3D views are generated from architects' drawings; prices, yields and timings are estimates and may change.</span><button class="foot-theme" type="button" data-theme-toggle><svg class="i-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><svg class="i-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.6A7 7 0 0 1 7.4 3.5a7 7 0 1 0 9.1 9.1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Light theme</span></button></div>
   </div>
 </footer>
 
