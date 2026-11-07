@@ -66,6 +66,16 @@ a{color:inherit}
 .top .cta{border:1px solid var(--gold);color:var(--on-dark);text-decoration:none;padding:9px 16px;border-radius:2px;font-size:.85rem;font-weight:500;transition:background .25s,color .25s;white-space:nowrap}
 .top .cta:hover{background:var(--gold);color:var(--forest)}
 @media (max-width:760px){.top nav{display:none}.top .cta{margin-left:auto}.mark i{display:none}}
+.menu-btn{display:none;width:40px;height:40px;align-items:center;justify-content:center;background:transparent;border:1px solid color-mix(in srgb,var(--sand) 35%,transparent);border-radius:2px;color:var(--on-dark);cursor:pointer;padding:0}
+.menu-btn svg{width:18px;height:18px}
+@media (max-width:760px){
+  .top .wrap{gap:10px;padding-block:12px}
+  .menu-btn{display:inline-flex}
+  .top .cta{padding:9px 13px}
+  .top nav.open{display:flex;flex-direction:column;gap:0;position:absolute;left:0;right:0;top:100%;margin:0;padding:6px 24px 14px;background:var(--forest);border-bottom:1px solid color-mix(in srgb,var(--sand) 18%,transparent);box-shadow:0 18px 30px rgba(0,0,0,.25)}
+  .top nav.open a{padding:14px 0;font-size:1rem;color:var(--on-dark);border-bottom:1px solid color-mix(in srgb,var(--sand) 12%,transparent)}
+  .top nav.open a:last-child{border-bottom:0}
+}
 
 /* hero */
 .hero{background:var(--forest);color:var(--on-dark);overflow:hidden;position:relative}
@@ -179,8 +189,9 @@ a.proj:hover .go .arrow{background:var(--gold);border-color:var(--gold);color:#1
       <span><b>FAME</b><small>LIVING</small></span>
       <i>Showcase</i>
     </a>
-    <nav aria-label="Sections"><a href="#approach">Approach</a><a href="#contact">Contact</a><a href="https://fameliving.co.uk/" target="_blank" rel="noopener">fameliving.co.uk</a></nav>
+    <nav aria-label="Sections" id="lnav"><a href="#approach">Approach</a><a href="#contact">Contact</a><a href="https://fameliving.co.uk/" target="_blank" rel="noopener">fameliving.co.uk</a></nav>
     <a class="cta" href="#projects">View projects</a>
+    <button class="menu-btn" type="button" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="lnav"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></button>
   </div>
 </header>
 
@@ -302,5 +313,14 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     const tick=t=>{const k=Math.min(1,Math.max(0,(t-t0)/d)),e=1-Math.pow(1-k,3);el.textContent=pre+(end*e).toFixed(dec)+suf;if(k<1)requestAnimationFrame(tick)};
     requestAnimationFrame(tick);
   });
+})();
+</script>
+<script>
+(function(){const b=document.getElementById('menu-btn'),n=document.getElementById('lnav');if(!b||!n)return;
+const set=o=>{n.classList.toggle('open',o);b.setAttribute('aria-expanded',String(o))};
+b.addEventListener('click',e=>{e.stopPropagation();set(!n.classList.contains('open'))});
+n.addEventListener('click',e=>{if(e.target.closest('a'))set(false)});
+document.addEventListener('click',e=>{if(!e.target.closest('.top'))set(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')set(false)});
 })();
 </script>
